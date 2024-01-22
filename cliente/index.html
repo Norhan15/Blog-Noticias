@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog de Noticias</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        #noticias {
+            list-style-type: none;
+            padding: 0;
+        }
+        .noticia {
+            width:1000px ;
+            border: 1px solid #ccc;
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .noticia h3 {
+            margin: 0;
+        }
+        .noticia .autor, .noticia .fecha {
+            font-size: 0.8em;
+            color: #888;
+        }
+    </style>
+</head>
+
+<body>
+    <h2>Noticias</h2>
+    <ul id="noticias">
+
+    </ul>
+
+    <script>
+        const listaNoticias = document.getElementById("noticias");
+
+        function pintarNoticia(noticia) {
+            const li = document.createElement("li");
+            li.className = 'noticia';
+            li.innerHTML = `<h3>${noticia.titulo}</h3><p>${noticia.cuerpo}</p><p class="autor">Autor: ${noticia.autor}</p><p class="fecha">Fecha de publicación: ${noticia.fecha}</p>`;
+
+            listaNoticias.innerHTML = '';
+            listaNoticias.appendChild(li);
+        }
+
+        async function obtenerNoticias() {
+            try {
+                const res = await fetch('http://localhost:3000/noticias');
+                const data = await res.json();
+
+                const noticia = data.noticias[data.noticias.length - 1];
+
+                pintarNoticia(noticia);
+            } catch (error) {
+                console.log(error);
+            }
+        }
+
+        async function obtenerNoticiasNuevas() {
+            try {
+                const res = await fetch('http://localhost:3000/noticia-nueva');
+                const data = await res.json();
+
+                const noticia = data.noticia;
+
+                pintarNoticia(noticia);
+            } catch (error) {
+                console.log(error)
+            } finally {
+                obtenerNoticiasNuevas();
+            }
+        }
+
+        obtenerNoticias();
+        obtenerNoticiasNuevas();
+    </script>
+</body>
+
+</html>
